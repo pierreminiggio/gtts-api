@@ -10,7 +10,11 @@ class App
     {
         if ($path === '/') {
             $commandResult = shell_exec('LC_CTYPE=en_US.utf8 gtts-cli --all');
-            var_dump($commandResult);
+            $lines = explode(PHP_EOL, $commandResult);
+            $langs = array_filter(array_map(fn (string $line): string => trim(explode(': ', $line)[0]), $lines));
+            http_response_code(200);
+            echo json_encode(['langs' => $langs]);
+
             return;
         }
 
