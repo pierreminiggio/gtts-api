@@ -43,7 +43,7 @@ class App
         ;
 
         if (! file_exists($completeFileName)) {
-            exec(
+            shell_exec(
                 'gtts-cli '
                 . escapeshellarg($text)
                 . ' --output '
