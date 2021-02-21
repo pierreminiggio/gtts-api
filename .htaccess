@@ -1,0 +1,9 @@
+RewriteEngine on
+
+RewriteBase /
+
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=302,L,NE]
+
+RewriteCond %{REQUEST_URI}  !\.(css|js|html?|jpg|gif|png|pdf|woff|woff2)$
+RewriteRule ^ public/index.php [L]
