@@ -1,6 +1,6 @@
 # gtts-api
 
 Prérequis :
-- PHP
+- PHP 8
 - Python 3
 - gtts-cli (pip install gTTS)
