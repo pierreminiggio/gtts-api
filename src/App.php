@@ -44,7 +44,7 @@ class App
 
         if (! file_exists($completeFileName)) {
             shell_exec(
-                'gtts-cli '
+                'LC_CTYPE=en_US.utf8 gtts-cli '
                 . escapeshellarg($text)
                 . ' --output '
                 . escapeshellarg($completeFileName)
