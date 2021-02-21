@@ -9,8 +9,8 @@ class App
     public function run(string $path, ?string $queryParameters): void
     {
         if ($path === '/') {
-            http_response_code(404);
-
+            $commandResult = shell_exec('LC_CTYPE=en_US.utf8 gtts-cli --all');
+            var_dump($commandResult);
             return;
         }
 
