@@ -6,7 +6,14 @@ use Illuminate\Support\Str;
 
 class App
 {
-    public function run(string $path, ?string $queryParameters): void
+    public function run(
+        string $path,
+        ?string $queryParameters,
+        string $method,
+        ?string $body,
+        ?string $authHeader,
+        string $host
+    ): void
     {
 
         $cacheFolder =
@@ -17,9 +24,10 @@ class App
             . 'public'
             . DIRECTORY_SEPARATOR
             . 'cache'
+            . DIRECTORY_SEPARATOR
         ;
 
-        $langsFile = $cacheFolder . DIRECTORY_SEPARATOR . 'langs.json';
+        $langsFile = $cacheFolder . 'langs.json';
 
         if (! file_exists($langsFile)) {
             $commandResult = shell_exec('LC_CTYPE=en_US.utf8 gtts-cli --all');
@@ -31,9 +39,35 @@ class App
         }
         
         if ($path === '/') {
-            
             http_response_code(200);
             echo json_encode(['langs' => $langs]);
+
+            return;
+        }
+
+        $processedString = '/processed/';
+        $processedCacheFolder = $cacheFolder . 'processed' . DIRECTORY_SEPARATOR;
+
+        if (str_starts_with($path, $processedString)) {
+            $identifier = substr($path, strlen($processedString));
+            $filename = $identifier . '.mp3';
+            $completeFileName = $processedCacheFolder . $filename;
+
+            if (! file_exists($completeFileName)) {
+                http_response_code(404);
+
+                return;
+            }
+
+            (new MP3FileRenderer())->show($filename, $completeFileName);
+        }
+
+        if (! file_exists($cacheFolder)) {
+            mkdir($cacheFolder);
+        }
+
+        if ($method === 'POST') {
+            (new PostRequestHandler())->run($path, $body, $authHeader, $processedCacheFolder, $host);
 
             return;
         }
@@ -60,7 +94,6 @@ class App
         $filename = Str::slug($text, '_') . '_' . $lang . '.mp3';
         $completeFileName =
             $cacheFolder
-            . DIRECTORY_SEPARATOR
             . $filename
         ;
 
@@ -75,12 +108,6 @@ class App
             );
         }
 
-        header('Content-type: audio/mpeg');
-        header('Content-length: ' . filesize($completeFileName));
-        header('Content-Disposition: inline; filename="' . $filename . '"');
-        header('Pragma: no-cache');
-        header('X-Pad: avoid browser bug');
-        header('Cache-Control: no-cache');
-        readfile($completeFileName);
+        (new MP3FileRenderer())->show($filename, $completeFileName);
     }
 }

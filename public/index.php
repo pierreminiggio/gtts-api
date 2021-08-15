@@ -21,9 +21,20 @@ if (strlen($calledEndPoint) > 1 && substr($calledEndPoint, -1) === '/') {
     $calledEndPoint = substr($calledEndPoint, 0, -1);
 }
 
+$protocol = isset($_SERVER['HTTPS']) ? 'https' : 'http';
+$host = $protocol . '://' . $_SERVER['HTTP_HOST'];
+
+if (substr($host, -1) == '/') {
+    $host = substr($host, 0, -1);
+}
+
 (new App())->run(
     $calledEndPoint,
-    $queryParameters
+    $queryParameters,
+    $_SERVER['REQUEST_METHOD'],
+    file_get_contents('php://input') ?? null,
+    $_SERVER['HTTP_AUTHORIZATION'] ?? null,
+    $host
 );
 
 exit;

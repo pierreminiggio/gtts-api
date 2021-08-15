@@ -14,7 +14,10 @@
     "config": {
         "sort-packages": true
     },
+    "minimum-stability": "dev",
     "require": {
-        "illuminate/support": "^8.28"
+        "illuminate/support": "^8.28",
+        "pierreminiggio/config-provider": "^1.0",
+        "pierreminiggio/github-action-run-starter-and-artifact-downloader": "dev-main"
     }
 }

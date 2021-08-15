@@ -1,2 +1,3 @@
-vendor
-public/cache/*
+/config.php
+/public/cache/*
+/vendor
