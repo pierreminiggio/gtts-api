@@ -72,7 +72,7 @@ class PostRequestHandler
                     $voiceProject['account'],
                     $voiceProject['project'],
                     'get-sound.yml',
-                    180,
+                    300,
                     0,
                     [
                         'text' => $text,
