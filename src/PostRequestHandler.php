@@ -9,7 +9,14 @@ use PierreMiniggio\GithubActionRunStarterAndArtifactDownloader\GithubActionRunSt
 class PostRequestHandler
 {
 
-    public function run(string $path, ?string $body, ?string $authHeader, string $processedCacheFolder, string $host): void
+    public function run(
+        string $path,
+        ?string $body,
+        ?string $authHeader,
+        string $processedCacheFolder,
+        string $host,
+        ?string $queryParameters
+    ): void
     {
         $projectDirectory = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
 
@@ -47,7 +54,18 @@ class PostRequestHandler
                 mkdir($processedCacheFolder);
             }
 
-            $processedName = sha1(base64_encode($text));
+            $defaultEnhanceValue = '1';
+            $enhance = $defaultEnhanceValue;
+
+            if ($queryParameters !== null) {
+                parse_str(substr($queryParameters, 1), $parsedParameters);
+                $enhance = isset($parsedParameters['enhance']) && $parsedParameters['enhance'] !== $defaultEnhanceValue
+                    ? '0'
+                    : $defaultEnhanceValue
+                ;
+            }
+
+            $processedName = sha1(base64_encode($text)) . ($enhance !== $defaultEnhanceValue ? '_raw' : '');
             $filename = $processedName . '.mp3';
             $completeFileName = $processedCacheFolder . $filename;
 
@@ -72,12 +90,13 @@ class PostRequestHandler
                     $voiceProject['account'],
                     $voiceProject['project'],
                     'get-sound.yml',
-                    180,
+                    $enhance === $defaultEnhanceValue ? 180 : 60,
                     0,
                     [
                         'text' => $text,
                         'lang' => $lang,
-                        'tld' => $tld
+                        'tld' => $tld,
+                        'enhance' => $enhance
                     ]
                 );
             } catch (Exception) {

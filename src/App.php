@@ -15,7 +15,6 @@ class App
         string $host
     ): void
     {
-
         $cacheFolder =
             __DIR__
             . DIRECTORY_SEPARATOR
@@ -67,7 +66,7 @@ class App
         }
 
         if ($method === 'POST') {
-            (new PostRequestHandler())->run($path, $body, $authHeader, $processedCacheFolder, $host);
+            (new PostRequestHandler())->run($path, $body, $authHeader, $processedCacheFolder, $host, $queryParameters);
 
             return;
         }
