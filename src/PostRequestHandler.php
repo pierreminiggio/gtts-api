@@ -69,7 +69,7 @@ class PostRequestHandler
             $filename = $processedName . '.mp3';
             $completeFileName = $processedCacheFolder . $filename;
 
-            $processedUrl = $host . '/processed/' . $processedName;
+            $processedUrl = $host . '/public/cache/processed/' . $processedName . '.mp3';
 
             if (file_exists($completeFileName)) {
                 $this->showFileUrl($processedUrl);
