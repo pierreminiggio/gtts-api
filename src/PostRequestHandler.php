@@ -255,7 +255,7 @@ class PostRequestHandler
                         $enhanceProject['account'],
                         $enhanceProject['project'],
                         'enhance.yml',
-                        140,
+                        150,
                         0,
                         [
                             'url' => $rawSpeecheloUrl
