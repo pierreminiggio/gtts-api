@@ -163,7 +163,7 @@ class PostRequestHandler
 
             if ($queryParameters !== null) {
                 parse_str(substr($queryParameters, 1), $parsedParameters);
-                $enhance = isset($parsedParameters['enhance']) || $parsedParameters['enhance'] === '1';
+                $enhance = ! isset($parsedParameters['enhance']) || $parsedParameters['enhance'] === '1';
             }
 
             $enhancedspeecheloName = sha1(base64_encode($text));
