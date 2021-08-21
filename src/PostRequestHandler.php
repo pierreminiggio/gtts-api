@@ -178,6 +178,8 @@ class PostRequestHandler
                 $this->showFileUrl($speecheloUrl);
             }
 
+            set_time_limit(0);
+
             $completeRawFileName = $speecheloCacheFolder . $rawSpeecheloName . '.mp3';
 
             $githubActionRunStarterAndArtifactDownloader = (
@@ -185,7 +187,6 @@ class PostRequestHandler
             )->make();
 
             if (! file_exists($completeRawFileName)) {
-                set_time_limit(0);
 
                 $speecheloProjects = $config['speecheloProjects'];
                 $speecheloProject = $speecheloProjects[array_rand($speecheloProjects)];
