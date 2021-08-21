@@ -61,12 +61,29 @@ class App
             (new MP3FileRenderer())->show($filename, $completeFileName);
         }
 
+        $speecheloString = '/speechelo/';
+        $speecheloCacheFolder = $cacheFolder . 'speechelo' . DIRECTORY_SEPARATOR;
+
+        if (str_starts_with($path, $speecheloString)) {
+            $identifier = substr($path, strlen($speecheloString));
+            $filename = $identifier . '.mp3';
+            $completeFileName = $speecheloCacheFolder . $filename;
+
+            if (! file_exists($completeFileName)) {
+                http_response_code(404);
+
+                return;
+            }
+
+            (new MP3FileRenderer())->show($filename, $completeFileName);
+        }
+
         if (! file_exists($cacheFolder)) {
             mkdir($cacheFolder);
         }
 
         if ($method === 'POST') {
-            (new PostRequestHandler())->run($path, $body, $authHeader, $processedCacheFolder, $host, $queryParameters);
+            (new PostRequestHandler())->run($path, $body, $authHeader, $processedCacheFolder, $speecheloCacheFolder, $host, $queryParameters);
 
             return;
         }
