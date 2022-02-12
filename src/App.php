@@ -36,7 +36,7 @@ class App
         } else {
             $langs = json_decode(file_get_contents($langsFile), true);
         }
-        
+ 
         if ($path === '/') {
             http_response_code(200);
             echo json_encode(['langs' => $langs]);
@@ -107,14 +107,15 @@ class App
 
         $text = urldecode(substr($path, 1));
 
-        $filename = Str::slug($text, '_') . '_' . $lang . '.mp3';
+        $filenameWithoutExt = Str::slug($text, '_');
+        $filename = $filenameWithoutExt . '_' . $lang . '.mp3';
         $completeFileName =
             $cacheFolder
             . $filename
         ;
 
         if (! file_exists($completeFileName)) {
-            shell_exec(
+            $commandReturn = shell_exec(
                 'LC_CTYPE=en_US.utf8 gtts-cli '
                 . escapeshellarg($text)
                 . ' --output '
@@ -122,6 +123,24 @@ class App
                 . ' --lang '
                 . $lang
             );
+        }
+
+       if (! file_exists($completeFileName)) {
+            $commandReturn = shell_exec(
+                'LC_CTYPE=en_US.utf8 gtts-cli '
+                . escapeshellarg($filenameWithoutExt)
+                . ' --output '
+                . escapeshellarg($completeFileName)
+                . ' --lang '
+                . $lang
+            );
+        }
+
+        if (! file_exists($completeFileName)) {
+            http_response_code(500);
+            echo json_encode(['error' => 'The file wasn\'t created']);
+
+            return;
         }
 
         (new MP3FileRenderer())->show($filename, $completeFileName);
