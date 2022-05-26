@@ -197,7 +197,7 @@ class PostRequestHandler
                         $speecheloProject['account'],
                         $speecheloProject['project'],
                         'get-sound.yml',
-                        70,
+                        300,
                         0,
                         [
                             'text' => $text,
