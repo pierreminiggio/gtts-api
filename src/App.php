@@ -107,23 +107,25 @@ class App
 
         $text = urldecode(substr($path, 1));
 
-        $filenameWithoutExt = Str::slug($text, '_');
+        $isChinese = $lang === 'zh';
+        $filenameWithoutExt = $isChinese ? base64_encode($text) : Str::slug($text, '_');
         $filename = $filenameWithoutExt . '_' . $lang . '.mp3';
         $completeFileName =
             $cacheFolder
             . $filename
         ;
+        
 
         if (! file_exists($completeFileName)) {
             $commandReturn = shell_exec(
                 'LC_CTYPE=en_US.utf8 gtts-cli '
-                . escapeshellarg($text)
+                . ($isChinese ? $text : escapeshellarg($text))
                 . ' --output '
                 . escapeshellarg($completeFileName)
                 . ' --lang '
                 . $lang
             );
-        }
+       }
 
        if (! file_exists($completeFileName)) {
             $commandReturn = shell_exec(
