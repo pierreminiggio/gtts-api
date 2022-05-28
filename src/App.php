@@ -119,7 +119,9 @@ class App
         if (! file_exists($completeFileName)) {
             $commandReturn = shell_exec(
                 'LC_CTYPE=en_US.utf8 gtts-cli '
-                . ($isChinese ? $text : escapeshellarg($text))
+                . ($isChinese ? (
+                    '\'' . str_replace('\'', '', $text) . '\''
+                ) : escapeshellarg($text))
                 . ' --output '
                 . escapeshellarg($completeFileName)
                 . ' --lang '
