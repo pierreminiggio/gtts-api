@@ -117,6 +117,30 @@ class App
         
 
         if (! file_exists($completeFileName)) {
+
+            if ($isChinese) {
+                $textLength = mb_strlen($text);
+
+                $newText = '';
+
+                for ($charId = 0; $charId < $textLength; $charId++) {
+                    $char = mb_substr($text, $charId, 1);
+
+                    if (preg_match('/\p{Han}+/u', $char)) {
+                        $newText .= $char;
+                        continue;
+                    }
+
+                    $newText .= $char;
+                }
+
+                var_dump(escapeshellarg($newText)); die;
+                
+                
+                $res = preg_match('/\p{Han}+/u', $text, $chineseCharacters);
+                var_dump($chineseCharacters, $res); die;
+            }
+
             $commandReturn = shell_exec(
                 'LC_CTYPE=en_US.utf8 gtts-cli '
                 . ($isChinese ? (
@@ -128,17 +152,6 @@ class App
                 . $lang
             );
        }
-
-       if (! file_exists($completeFileName)) {
-            $commandReturn = shell_exec(
-                'LC_CTYPE=en_US.utf8 gtts-cli '
-                . escapeshellarg($filenameWithoutExt)
-                . ' --output '
-                . escapeshellarg($completeFileName)
-                . ' --lang '
-                . $lang
-            );
-        }
 
         if (! file_exists($completeFileName)) {
             http_response_code(500);
