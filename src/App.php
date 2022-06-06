@@ -131,17 +131,16 @@ class App
                         continue;
                     }
 
-                    $newText .= $char;
+                    if (preg_match('/^[A-Za-zÀ-ÿ,0-9,\,,\.,&,\-,_, ]*$/', $char)) {
+                        $newText .= $char;
+                        continue;
+                    }
                 }
 
-                var_dump(escapeshellarg($newText)); die;
-                
-                
-                $res = preg_match('/\p{Han}+/u', $text, $chineseCharacters);
-                var_dump($chineseCharacters, $res); die;
+                $text = $newText;
             }
 
-            $commandReturn = shell_exec(
+            shell_exec(
                 'LC_CTYPE=en_US.utf8 gtts-cli '
                 . ($isChinese ? (
                     '\'' . str_replace('\'', '', $text) . '\''
