@@ -131,7 +131,7 @@ class App
                         continue;
                     }
 
-                    if (preg_match('/^[A-Za-zÀ-ÿ,0-9,\,,\.,&,\-,_, ]*$/', $char)) {
+                    if (preg_match('/^[A-Za-zÀ-ÿ,0-9,\,,\.,&,\-,_, ,:]*$/', $char)) {
                         $newText .= $char;
                         continue;
                     }
